@@ -33,9 +33,6 @@
       justify-content: space-between;
       align-items: center;
     }
-    input[type="file"] {
-      margin-bottom: 10px;
-    }
     button {
       background-color: #003366;
       color: white;
@@ -66,85 +63,71 @@
 </header>
 
 <div class="container">
-  
-  <!-- Informes -->
+  <!-- Secciones Generales -->
   <div class="section">
-    <h2>📁 Informes 
-      <input type="file" id="input-informes">
-      <button onclick="uploadFile('informes')">Subir</button>
-    </h2>
-    <ul id="lista-informes"></ul>
+    <h2>📌 Notas Internas Enviadas</h2>
+    <ul>
+      <li>DG <button onclick="uploadFile('notas-enviadas-dg')">Subir</button></li>
+      <li>DAF <button onclick="uploadFile('notas-enviadas-daf')">Subir</button></li>
+      <li>UPC <button onclick="uploadFile('notas-enviadas-upc')">Subir</button></li>
+    </ul>
   </div>
 
-  <!-- Notas Internas -->
   <div class="section">
-    <h2>📌 Notas Internas 
-      <input type="file" id="input-notas">
-      <button onclick="uploadFile('notas')">Subir</button>
-    </h2>
-    <ul id="lista-notas"></ul>
+    <h2>📌 Notas Internas Recibidas</h2>
+    <ul>
+      <li>DG <button onclick="uploadFile('notas-recibidas-dg')">Subir</button></li>
+      <li>DAF <button onclick="uploadFile('notas-recibidas-daf')">Subir</button></li>
+      <li>UPC <button onclick="uploadFile('notas-recibidas-upc')">Subir</button></li>
+    </ul>
   </div>
 
-  <!-- Arqueos y Comisiones -->
   <div class="section">
-    <h2>🏦 Arqueos y Comisiones 
-      <input type="file" id="input-arqueos">
-      <button onclick="uploadFile('arqueos')">Subir</button>
-    </h2>
-    <ul id="lista-arqueos"></ul>
+    <h2>📁 Informes Semanales <button onclick="uploadFile('informes-semanales')">Subir</button></h2>
   </div>
 
-  <!-- Otros Aportes -->
   <div class="section">
-    <h2>📥 Otros Aportes 
-      <input type="file" id="input-aportes">
-      <button onclick="uploadFile('aportes')">Subir</button>
-    </h2>
-    <ul id="lista-aportes"></ul>
+    <h2>📁 Informes Mensuales <button onclick="uploadFile('informes-mensuales')">Subir</button></h2>
   </div>
 
+  <div class="section">
+    <h2>🏦 Comisiones Bancarias <button onclick="uploadFile('comisiones-bancarias')">Subir</button></h2>
+  </div>
+
+  <div class="section">
+    <h2>🏦 Arqueo de Caja <button onclick="uploadFile('arqueo-caja')">Subir</button></h2>
+  </div>
+
+  <div class="section">
+    <h2>📥 Otros Aportes <button onclick="uploadFile('otros-aportes')">Subir</button></h2>
+  </div>
+
+  <div class="section">
+    <h2>💼 Movimientos Económicos <button onclick="uploadFile('movimientos-economicos')">Subir</button></h2>
+  </div>
 </div>
 
 <script>
   const files = {
-    informes: [],
-    notas: [],
-    arqueos: [],
-    aportes: []
+    'notas-enviadas-dg': [],
+    'notas-enviadas-daf': [],
+    'notas-enviadas-upc': [],
+    'notas-recibidas-dg': [],
+    'notas-recibidas-daf': [],
+    'notas-recibidas-upc': [],
+    'informes-semanales': [],
+    'informes-mensuales': [],
+    'comisiones-bancarias': [],
+    'arqueo-caja': [],
+    'otros-aportes': [],
+    'movimientos-economicos': []
   };
 
   const uploadFile = (category) => {
-    const input = document.getElementById(`input-${category}`);
-    const file = input.files[0];
-
-    if (!file) {
-      alert('Selecciona un archivo para subir.');
-      return;
-    }
-
-    files[category].push(file.name);
-    renderList(category);
-    input.value = '';
-  };
-
-  const deleteFile = (category, index) => {
-    files[category].splice(index, 1);
-    renderList(category);
-  };
-
-  const renderList = (category) => {
-    const list = document.getElementById(`lista-${category}`);
-    list.innerHTML = '';
-    files[category].forEach((file, index) => {
-      const li = document.createElement('li');
-      li.textContent = file;
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = 'Eliminar';
-      deleteBtn.style.marginLeft = '10px';
-      deleteBtn.onclick = () => deleteFile(category, index);
-      li.appendChild(deleteBtn);
-      list.appendChild(li);
-    });
+    const fileName = prompt("Nombre del archivo:");
+    if (!fileName) return;
+    files[category].push(fileName);
+    alert(`Archivo "${fileName}" subido correctamente en "${category}"`);
   };
 </script>
 
