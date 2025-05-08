@@ -29,16 +29,12 @@
     }
     h2 {
       color: #003366;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    a {
-      display: block;
-      color: #003366;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
+    input[type="file"] {
+      margin-bottom: 10px;
     }
     button {
       background-color: #003366;
@@ -51,8 +47,14 @@
     button:hover {
       background-color: #002244;
     }
-    input[type="file"] {
-      margin-bottom: 10px;
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    li {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
@@ -60,54 +62,90 @@
 
 <header>
   <h1>UNIDAD DE CAJA</h1>
-  <p>Acceso a documentos digitalizados y organizados por categoría</p>
+  <p>Gestión de documentos digitalizados y organizados por categoría</p>
 </header>
 
 <div class="container">
-
-  <!-- Subida de Archivos -->
+  
+  <!-- Informes -->
   <div class="section">
-    <h2>📤 Subir Archivo</h2>
-    <input type="file" id="fileInput">
-    <button onclick="uploadFile()">Subir Archivo</button>
+    <h2>📁 Informes 
+      <input type="file" id="input-informes">
+      <button onclick="uploadFile('informes')">Subir</button>
+    </h2>
+    <ul id="lista-informes"></ul>
   </div>
 
-  <!-- Lista de Archivos -->
+  <!-- Notas Internas -->
   <div class="section">
-    <h2>📂 Archivos Disponibles</h2>
-    <ul id="fileList"></ul>
+    <h2>📌 Notas Internas 
+      <input type="file" id="input-notas">
+      <button onclick="uploadFile('notas')">Subir</button>
+    </h2>
+    <ul id="lista-notas"></ul>
+  </div>
+
+  <!-- Arqueos y Comisiones -->
+  <div class="section">
+    <h2>🏦 Arqueos y Comisiones 
+      <input type="file" id="input-arqueos">
+      <button onclick="uploadFile('arqueos')">Subir</button>
+    </h2>
+    <ul id="lista-arqueos"></ul>
+  </div>
+
+  <!-- Otros Aportes -->
+  <div class="section">
+    <h2>📥 Otros Aportes 
+      <input type="file" id="input-aportes">
+      <button onclick="uploadFile('aportes')">Subir</button>
+    </h2>
+    <ul id="lista-aportes"></ul>
   </div>
 
 </div>
 
 <script>
-  const uploadFile = async () => {
-    const fileInput = document.getElementById('fileInput');
-    const file = fileInput.files[0];
+  const files = {
+    informes: [],
+    notas: [],
+    arqueos: [],
+    aportes: []
+  };
+
+  const uploadFile = (category) => {
+    const input = document.getElementById(`input-${category}`);
+    const file = input.files[0];
 
     if (!file) {
       alert('Selecciona un archivo para subir.');
       return;
     }
 
-    // Aquí deberías integrar la subida al servidor (Ej: Supabase, Firebase o API)
-    alert(`Archivo ${file.name} subido correctamente.`);
+    files[category].push(file.name);
+    renderList(category);
+    input.value = '';
+  };
 
-    // Simulación de subida:
-    const li = document.createElement('li');
-    li.textContent = file.name;
-    
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'Eliminar';
-    deleteBtn.style.marginLeft = '10px';
-    deleteBtn.onclick = () => {
-      li.remove();
-      alert(`Archivo ${file.name} eliminado.`);
-    };
+  const deleteFile = (category, index) => {
+    files[category].splice(index, 1);
+    renderList(category);
+  };
 
-    li.appendChild(deleteBtn);
-    document.getElementById('fileList').appendChild(li);
-  }
+  const renderList = (category) => {
+    const list = document.getElementById(`lista-${category}`);
+    list.innerHTML = '';
+    files[category].forEach((file, index) => {
+      const li = document.createElement('li');
+      li.textContent = file;
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Eliminar';
+      deleteBtn.style.marginLeft = '10px';
+      deleteBtn.onclick = () => deleteFile(category, index);
+      li.appendChild(deleteBtn);
+      list.appendChild(li);
+    });
+  };
 </script>
 
 </body>
