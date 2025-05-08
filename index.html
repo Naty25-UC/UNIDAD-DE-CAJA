@@ -29,9 +29,6 @@
     }
     h2 {
       color: #003366;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
     button {
       background-color: #003366;
@@ -53,6 +50,9 @@
       justify-content: space-between;
       margin-bottom: 0.5rem;
     }
+    .file-input {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -63,71 +63,62 @@
 </header>
 
 <div class="container">
+
   <!-- Secciones Generales -->
   <div class="section">
     <h2>📌 Notas Internas Enviadas</h2>
-    <ul>
-      <li>DG <button onclick="uploadFile('notas-enviadas-dg')">Subir</button></li>
-      <li>DAF <button onclick="uploadFile('notas-enviadas-daf')">Subir</button></li>
-      <li>UPC <button onclick="uploadFile('notas-enviadas-upc')">Subir</button></li>
+    <ul id="notas-enviadas-list">
     </ul>
+    <input type="text" id="notas-enviadas-input" placeholder="Nombre del archivo" class="file-input">
+    <button onclick="uploadFile('notas-enviadas')">Subir</button>
   </div>
 
   <div class="section">
     <h2>📌 Notas Internas Recibidas</h2>
-    <ul>
-      <li>DG <button onclick="uploadFile('notas-recibidas-dg')">Subir</button></li>
-      <li>DAF <button onclick="uploadFile('notas-recibidas-daf')">Subir</button></li>
-      <li>UPC <button onclick="uploadFile('notas-recibidas-upc')">Subir</button></li>
+    <ul id="notas-recibidas-list">
     </ul>
+    <input type="text" id="notas-recibidas-input" placeholder="Nombre del archivo" class="file-input">
+    <button onclick="uploadFile('notas-recibidas')">Subir</button>
   </div>
 
-  <div class="section">
-    <h2>📁 Informes Semanales <button onclick="uploadFile('informes-semanales')">Subir</button></h2>
-  </div>
-
-  <div class="section">
-    <h2>📁 Informes Mensuales <button onclick="uploadFile('informes-mensuales')">Subir</button></h2>
-  </div>
-
-  <div class="section">
-    <h2>🏦 Comisiones Bancarias <button onclick="uploadFile('comisiones-bancarias')">Subir</button></h2>
-  </div>
-
-  <div class="section">
-    <h2>🏦 Arqueo de Caja <button onclick="uploadFile('arqueo-caja')">Subir</button></h2>
-  </div>
-
-  <div class="section">
-    <h2>📥 Otros Aportes <button onclick="uploadFile('otros-aportes')">Subir</button></h2>
-  </div>
-
-  <div class="section">
-    <h2>💼 Movimientos Económicos <button onclick="uploadFile('movimientos-economicos')">Subir</button></h2>
-  </div>
 </div>
 
 <script>
   const files = {
-    'notas-enviadas-dg': [],
-    'notas-enviadas-daf': [],
-    'notas-enviadas-upc': [],
-    'notas-recibidas-dg': [],
-    'notas-recibidas-daf': [],
-    'notas-recibidas-upc': [],
-    'informes-semanales': [],
-    'informes-mensuales': [],
-    'comisiones-bancarias': [],
-    'arqueo-caja': [],
-    'otros-aportes': [],
-    'movimientos-economicos': []
+    'notas-enviadas': [],
+    'notas-recibidas': []
   };
 
   const uploadFile = (category) => {
-    const fileName = prompt("Nombre del archivo:");
-    if (!fileName) return;
+    const input = document.getElementById(`${category}-input`);
+    const fileName = input.value.trim();
+    if (!fileName) {
+      alert('Por favor, ingresa un nombre de archivo.');
+      return;
+    }
     files[category].push(fileName);
-    alert(`Archivo "${fileName}" subido correctamente en "${category}"`);
+    input.value = '';
+    renderList(category);
+  };
+
+  const deleteFile = (category, index) => {
+    files[category].splice(index, 1);
+    renderList(category);
+  };
+
+  const renderList = (category) => {
+    const list = document.getElementById(`${category}-list`);
+    list.innerHTML = '';
+    files[category].forEach((file, index) => {
+      const li = document.createElement('li');
+      li.textContent = file;
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Eliminar';
+      deleteBtn.style.marginLeft = '10px';
+      deleteBtn.onclick = () => deleteFile(category, index);
+      li.appendChild(deleteBtn);
+      list.appendChild(li);
+    });
   };
 </script>
 
