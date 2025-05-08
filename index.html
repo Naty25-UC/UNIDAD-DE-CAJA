@@ -60,6 +60,14 @@
     li button {
       margin-left: 10px;
     }
+    #folder-view {
+      display: none;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin: 2rem;
+    }
   </style>
 </head>
 <body>
@@ -78,14 +86,12 @@
     <p>Gestión de documentos digitalizados y organizados por categoría</p>
   </header>
 
-  <div id="sections">
-    <div class="section" id="section-template">
-      <h2>[[category]]
-        <input type="file" id="input-[[id]]">
-        <button onclick="uploadFile('[[id]]')">Subir</button>
-      </h2>
-      <ul id="lista-[[id]]"></ul>
-    </div>
+  <div id="sections"></div>
+
+  <div id="folder-view">
+    <h2 id="folder-title">Carpeta: </h2>
+    <ul id="folder-list"></ul>
+    <button onclick="closeFolderView()">🔙 Volver</button>
   </div>
 </div>
 
@@ -117,13 +123,15 @@
   const files = {};
   categories.forEach(cat => {
     files[cat.id] = [];
-    const section = document.getElementById('section-template').cloneNode(true);
-    section.style.display = 'block';
-    section.innerHTML = section.innerHTML.replace('[[category]]', cat.name).replace(/\[\[id\]\]/g, cat.id);
+    const section = document.createElement('div');
+    section.classList.add('section');
+    section.innerHTML = `<h2>${cat.name}
+      <input type="file" id="input-${cat.id}">
+      <button onclick="uploadFile('${cat.id}')">Subir</button>
+      <button onclick="viewFolder('${cat.id}')">📂 Ver Carpeta</button>
+    </h2>`;
     document.getElementById('sections').appendChild(section);
   });
-
-  document.getElementById('section-template').remove();
 
   const uploadFile = (category) => {
     const input = document.getElementById(`input-${category}`);
@@ -135,22 +143,25 @@
     }
 
     files[category].push(file.name);
-    renderList(category);
     input.value = '';
   };
 
-  const renderList = (category) => {
-    const list = document.getElementById(`lista-${category}`);
+  const viewFolder = (category) => {
+    document.getElementById('folder-title').innerText = `Carpeta: ${category}`;
+    const list = document.getElementById('folder-list');
     list.innerHTML = '';
-    files[category].forEach((file, index) => {
+    files[category].forEach(file => {
       const li = document.createElement('li');
-      li.innerHTML = `${file} <button onclick="downloadFile('${file}')">🔽 Descargar</button>`;
+      li.textContent = file;
       list.appendChild(li);
     });
+    document.getElementById('content').style.display = 'none';
+    document.getElementById('folder-view').style.display = 'block';
   };
 
-  const downloadFile = (filename) => {
-    alert('Descarga simulada para: ' + filename);
+  const closeFolderView = () => {
+    document.getElementById('folder-view').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
   };
 </script>
 
