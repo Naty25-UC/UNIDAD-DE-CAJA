@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>UNIDAD DE CAJA</title>
+  <title>Unidad de Caja - Gestión Documental</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -55,86 +55,75 @@
       display: flex;
       justify-content: space-between;
       margin-bottom: 0.5rem;
+      align-items: center;
+    }
+    li button {
+      margin-left: 10px;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>UNIDAD DE CAJA</h1>
-  <p>Gestión de documentos digitalizados y organizados por categoría</p>
-</header>
+<div id="login">
+  <h2>Iniciar Sesión</h2>
+  <input type="text" id="username" placeholder="Usuario">
+  <input type="password" id="password" placeholder="Contraseña">
+  <button onclick="login()">Ingresar</button>
+  <p id="error" style="color:red;"></p>
+</div>
 
-<div class="container">
+<div class="container" id="content" style="display:none;">
+  <header>
+    <h1>UNIDAD DE CAJA</h1>
+    <p>Gestión de documentos digitalizados y organizados por categoría</p>
+  </header>
 
-  <div class="section">
-    <h2>📁 Notas Internas Enviadas
-      <input type="file" id="input-notas-enviadas">
-      <button onclick="uploadFile('notasEnviadas')">Subir</button>
-    </h2>
-    <ul id="lista-notasEnviadas"></ul>
+  <div id="sections">
+    <div class="section" id="section-template">
+      <h2>[[category]]
+        <input type="file" id="input-[[id]]">
+        <button onclick="uploadFile('[[id]]')">Subir</button>
+      </h2>
+      <ul id="lista-[[id]]"></ul>
+    </div>
   </div>
-
-  <div class="section">
-    <h2>📌 Notas Internas Recibidas
-      <input type="file" id="input-notas-recibidas">
-      <button onclick="uploadFile('notasRecibidas')">Subir</button>
-    </h2>
-    <ul id="lista-notasRecibidas"></ul>
-  </div>
-
-  <div class="section">
-    <h2>📁 Informes Semanales
-      <input type="file" id="input-informes-semanales">
-      <button onclick="uploadFile('informesSemanales')">Subir</button>
-    </h2>
-    <ul id="lista-informesSemanales"></ul>
-  </div>
-
-  <div class="section">
-    <h2>📁 Informes Mensuales
-      <input type="file" id="input-informes-mensuales">
-      <button onclick="uploadFile('informesMensuales')">Subir</button>
-    </h2>
-    <ul id="lista-informesMensuales"></ul>
-  </div>
-
-  <div class="section">
-    <h2>🏦 Comisiones Bancarias
-      <input type="file" id="input-comisiones">
-      <button onclick="uploadFile('comisiones')">Subir</button>
-    </h2>
-    <ul id="lista-comisiones"></ul>
-  </div>
-
-  <div class="section">
-    <h2>🏦 Arqueo de Caja
-      <input type="file" id="input-arqueo">
-      <button onclick="uploadFile('arqueo')">Subir</button>
-    </h2>
-    <ul id="lista-arqueo"></ul>
-  </div>
-
-  <div class="section">
-    <h2>📥 Otros Aportes
-      <input type="file" id="input-aportes">
-      <button onclick="uploadFile('aportes')">Subir</button>
-    </h2>
-    <ul id="lista-aportes"></ul>
-  </div>
-
 </div>
 
 <script>
-  const files = {
-    notasEnviadas: [],
-    notasRecibidas: [],
-    informesSemanales: [],
-    informesMensuales: [],
-    comisiones: [],
-    arqueo: [],
-    aportes: []
+  const credentials = { username: 'naty', password: 'sigaparticipando' };
+
+  const categories = [
+    { id: 'notasEnviadas', name: '📁 Notas Internas Enviadas' },
+    { id: 'notasRecibidas', name: '📌 Notas Internas Recibidas' },
+    { id: 'informesSemanales', name: '📁 Informes Semanales' },
+    { id: 'informesMensuales', name: '📁 Informes Mensuales' },
+    { id: 'comisiones', name: '🏦 Comisiones Bancarias' },
+    { id: 'arqueo', name: '🏦 Arqueo de Caja' },
+    { id: 'aportes', name: '📥 Otros Aportes' }
+  ];
+
+  const login = () => {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+
+    if (user === credentials.username && pass === credentials.password) {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+    } else {
+      document.getElementById('error').textContent = 'Usuario o contraseña incorrecta.';
+    }
   };
+
+  const files = {};
+  categories.forEach(cat => {
+    files[cat.id] = [];
+    const section = document.getElementById('section-template').cloneNode(true);
+    section.style.display = 'block';
+    section.innerHTML = section.innerHTML.replace('[[category]]', cat.name).replace(/\[\[id\]\]/g, cat.id);
+    document.getElementById('sections').appendChild(section);
+  });
+
+  document.getElementById('section-template').remove();
 
   const uploadFile = (category) => {
     const input = document.getElementById(`input-${category}`);
@@ -150,24 +139,18 @@
     input.value = '';
   };
 
-  const deleteFile = (category, index) => {
-    files[category].splice(index, 1);
-    renderList(category);
-  };
-
   const renderList = (category) => {
     const list = document.getElementById(`lista-${category}`);
     list.innerHTML = '';
     files[category].forEach((file, index) => {
       const li = document.createElement('li');
-      li.textContent = file;
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = 'Eliminar';
-      deleteBtn.style.marginLeft = '10px';
-      deleteBtn.onclick = () => deleteFile(category, index);
-      li.appendChild(deleteBtn);
+      li.innerHTML = `${file} <button onclick="downloadFile('${file}')">🔽 Descargar</button>`;
       list.appendChild(li);
     });
+  };
+
+  const downloadFile = (filename) => {
+    alert('Descarga simulada para: ' + filename);
   };
 </script>
 
