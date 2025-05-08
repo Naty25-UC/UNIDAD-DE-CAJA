@@ -108,6 +108,18 @@
     { id: 'aportes', name: '📥 Otros Aportes' }
   ];
 
+  const login = () => {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+
+    if (user === credentials.username && pass === credentials.password) {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+    } else {
+      document.getElementById('error').textContent = 'Usuario o contraseña incorrecta.';
+    }
+  };
+
   const files = {};
   categories.forEach(cat => {
     files[cat.id] = [];
@@ -130,8 +142,7 @@
       return;
     }
 
-    const url = URL.createObjectURL(file);
-    files[category].push({ name: file.name, url });
+    files[category].push(file.name);
     input.value = '';
   };
 
@@ -141,11 +152,16 @@
     list.innerHTML = '';
     files[category].forEach(file => {
       const li = document.createElement('li');
-      li.innerHTML = `${file.name} <a href="${file.url}" target="_blank">🔍 Ver</a> <a href="${file.url}" download="${file.name}">🔽 Descargar</a>`;
+      li.textContent = file;
       list.appendChild(li);
     });
     document.getElementById('content').style.display = 'none';
     document.getElementById('folder-view').style.display = 'block';
+  };
+
+  const closeFolderView = () => {
+    document.getElementById('folder-view').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
   };
 </script>
 
