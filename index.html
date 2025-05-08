@@ -40,6 +40,20 @@
     a:hover {
       text-decoration: underline;
     }
+    button {
+      background-color: #003366;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #002244;
+    }
+    input[type="file"] {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -50,28 +64,51 @@
 </header>
 
 <div class="container">
+
+  <!-- Subida de Archivos -->
   <div class="section">
-    <h2>📁 Informes</h2>
-    <a href="https://drive.google.com/drive/folders/TU_ENLACE_INFORMES" target="_blank">Abrir carpeta de informes</a>
+    <h2>📤 Subir Archivo</h2>
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">Subir Archivo</button>
   </div>
 
+  <!-- Lista de Archivos -->
   <div class="section">
-    <h2>📌 Notas Internas</h2>
-    <a href="https://drive.google.com/drive/folders/TU_ENLACE_NOTAS_ENVIADAS" target="_blank">Notas Enviadas</a>
-    <a href="https://drive.google.com/drive/folders/TU_ENLACE_NOTAS_RECIBIDAS" target="_blank">Notas Recibidas</a>
+    <h2>📂 Archivos Disponibles</h2>
+    <ul id="fileList"></ul>
   </div>
 
-  <div class="section">
-    <h2>🏦 Arqueos y Comisiones</h2>
-    <a href="https://drive.google.com/drive/folders/TU_ENLACE_ARQUEOS" target="_blank">Arqueos de Caja</a>
-    <a href="https://drive.google.com/drive/folders/TU_ENLACE_COMISIONES" target="_blank">Comisiones Bancarias</a>
-  </div>
-
-  <div class="section">
-    <h2>📥 Otros Aportes</h2>
-    <a href="https://drive.google.com/drive/folders/TU_ENLACE_OTROS" target="_blank">Ver aportes</a>
-  </div>
 </div>
+
+<script>
+  const uploadFile = async () => {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+
+    if (!file) {
+      alert('Selecciona un archivo para subir.');
+      return;
+    }
+
+    // Aquí deberías integrar la subida al servidor (Ej: Supabase, Firebase o API)
+    alert(`Archivo ${file.name} subido correctamente.`);
+
+    // Simulación de subida:
+    const li = document.createElement('li');
+    li.textContent = file.name;
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Eliminar';
+    deleteBtn.style.marginLeft = '10px';
+    deleteBtn.onclick = () => {
+      li.remove();
+      alert(`Archivo ${file.name} eliminado.`);
+    };
+
+    li.appendChild(deleteBtn);
+    document.getElementById('fileList').appendChild(li);
+  }
+</script>
 
 </body>
 </html>
