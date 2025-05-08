@@ -29,6 +29,12 @@
     }
     h2 {
       color: #003366;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    input[type="file"] {
+      margin-bottom: 10px;
     }
     button {
       background-color: #003366;
@@ -50,9 +56,6 @@
       justify-content: space-between;
       margin-bottom: 0.5rem;
     }
-    .file-input {
-      margin-bottom: 10px;
-    }
   </style>
 </head>
 <body>
@@ -64,41 +67,87 @@
 
 <div class="container">
 
-  <!-- Secciones Generales -->
   <div class="section">
-    <h2>📌 Notas Internas Enviadas</h2>
-    <ul id="notas-enviadas-list">
-    </ul>
-    <input type="text" id="notas-enviadas-input" placeholder="Nombre del archivo" class="file-input">
-    <button onclick="uploadFile('notas-enviadas')">Subir</button>
+    <h2>📁 Notas Internas Enviadas
+      <input type="file" id="input-notas-enviadas">
+      <button onclick="uploadFile('notasEnviadas')">Subir</button>
+    </h2>
+    <ul id="lista-notasEnviadas"></ul>
   </div>
 
   <div class="section">
-    <h2>📌 Notas Internas Recibidas</h2>
-    <ul id="notas-recibidas-list">
-    </ul>
-    <input type="text" id="notas-recibidas-input" placeholder="Nombre del archivo" class="file-input">
-    <button onclick="uploadFile('notas-recibidas')">Subir</button>
+    <h2>📌 Notas Internas Recibidas
+      <input type="file" id="input-notas-recibidas">
+      <button onclick="uploadFile('notasRecibidas')">Subir</button>
+    </h2>
+    <ul id="lista-notasRecibidas"></ul>
+  </div>
+
+  <div class="section">
+    <h2>📁 Informes Semanales
+      <input type="file" id="input-informes-semanales">
+      <button onclick="uploadFile('informesSemanales')">Subir</button>
+    </h2>
+    <ul id="lista-informesSemanales"></ul>
+  </div>
+
+  <div class="section">
+    <h2>📁 Informes Mensuales
+      <input type="file" id="input-informes-mensuales">
+      <button onclick="uploadFile('informesMensuales')">Subir</button>
+    </h2>
+    <ul id="lista-informesMensuales"></ul>
+  </div>
+
+  <div class="section">
+    <h2>🏦 Comisiones Bancarias
+      <input type="file" id="input-comisiones">
+      <button onclick="uploadFile('comisiones')">Subir</button>
+    </h2>
+    <ul id="lista-comisiones"></ul>
+  </div>
+
+  <div class="section">
+    <h2>🏦 Arqueo de Caja
+      <input type="file" id="input-arqueo">
+      <button onclick="uploadFile('arqueo')">Subir</button>
+    </h2>
+    <ul id="lista-arqueo"></ul>
+  </div>
+
+  <div class="section">
+    <h2>📥 Otros Aportes
+      <input type="file" id="input-aportes">
+      <button onclick="uploadFile('aportes')">Subir</button>
+    </h2>
+    <ul id="lista-aportes"></ul>
   </div>
 
 </div>
 
 <script>
   const files = {
-    'notas-enviadas': [],
-    'notas-recibidas': []
+    notasEnviadas: [],
+    notasRecibidas: [],
+    informesSemanales: [],
+    informesMensuales: [],
+    comisiones: [],
+    arqueo: [],
+    aportes: []
   };
 
   const uploadFile = (category) => {
-    const input = document.getElementById(`${category}-input`);
-    const fileName = input.value.trim();
-    if (!fileName) {
-      alert('Por favor, ingresa un nombre de archivo.');
+    const input = document.getElementById(`input-${category}`);
+    const file = input.files[0];
+
+    if (!file) {
+      alert('Selecciona un archivo para subir.');
       return;
     }
-    files[category].push(fileName);
-    input.value = '';
+
+    files[category].push(file.name);
     renderList(category);
+    input.value = '';
   };
 
   const deleteFile = (category, index) => {
@@ -107,7 +156,7 @@
   };
 
   const renderList = (category) => {
-    const list = document.getElementById(`${category}-list`);
+    const list = document.getElementById(`lista-${category}`);
     list.innerHTML = '';
     files[category].forEach((file, index) => {
       const li = document.createElement('li');
